@@ -76,3 +76,18 @@ export const DEFAULT_AUTH0_CLIENT = {
   name: 'auth0-spa-js',
   version: version
 };
+
+/**
+ * @ignore
+ */
+export const DEFAULT_LOGOUT_PATH = '/v2/logout';
+
+/**
+ * @ignore
+ */
+export const DEFAULT_TOKEN_PATH = '/oauth/token';
+
+/**
+ * @ignore
+ */
+export const DEFAULT_LOGIN_PATH = '/authorize';

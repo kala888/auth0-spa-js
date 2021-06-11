@@ -37,7 +37,10 @@ import {
   RECOVERABLE_ERRORS,
   DEFAULT_SESSION_CHECK_EXPIRY_DAYS,
   DEFAULT_AUTH0_CLIENT,
-  INVALID_REFRESH_TOKEN_ERROR_MESSAGE
+  INVALID_REFRESH_TOKEN_ERROR_MESSAGE,
+  DEFAULT_LOGIN_PATH,
+  DEFAULT_LOGOUT_PATH,
+  DEFAULT_TOKEN_PATH
 } from './constants';
 
 import {
@@ -140,7 +143,7 @@ export default class Auth0Client {
   private transactionManager: TransactionManager;
   private customOptions: BaseLoginOptions;
   private domainUrl: string;
-  private tokenIssuer: string;
+  private tokenIssucreateAuth0Clienter: string;
   private defaultScope: string;
   private scope: string;
   private cookieStorage: ClientStorage;
@@ -148,6 +151,10 @@ export default class Auth0Client {
 
   cacheLocation: CacheLocation;
   private worker: Worker;
+  private tokenIssuer: string;
+  private logoutPath: string;
+  private tokenPath: string;
+  private loginPath: string;
 
   constructor(private options: Auth0ClientOptions) {
     typeof window !== 'undefined' && validateCrypto();
@@ -180,7 +187,13 @@ export default class Auth0Client {
       this.options?.advancedOptions?.defaultScope !== undefined
         ? this.options.advancedOptions.defaultScope
         : DEFAULT_SCOPE
-    );
+    )
+
+    this.loginPath = this.options?.advancedOptions?.loginPath? this.options.advancedOptions.loginPath:DEFAULT_LOGIN_PATH
+
+    this.logoutPath = this.options?.advancedOptions?.logoutPath? this.options.advancedOptions.logoutPath:DEFAULT_LOGOUT_PATH
+
+    this.tokenPath = this.options?.advancedOptions?.tokenPath? this.options.advancedOptions.tokenPath:DEFAULT_TOKEN_PATH
 
     // If using refresh tokens, automatically specify the `offline_access` scope.
     // Note we cannot add this to 'defaultScope' above as the scopes are used in the
@@ -246,7 +259,7 @@ export default class Auth0Client {
     };
   }
   private _authorizeUrl(authorizeOptions: AuthorizeOptions) {
-    return this._url(`/authorize?${createQueryParams(authorizeOptions)}`);
+    return this._url(`${this.loginPath}?${createQueryParams(authorizeOptions)}`);
   }
   private _verifyIdToken(
     id_token: string,
@@ -396,7 +409,8 @@ export default class Auth0Client {
         code: codeResult.code,
         grant_type: 'authorization_code',
         redirect_uri: params.redirect_uri,
-        auth0Client: this.options.auth0Client
+        auth0Client: this.options.auth0Client,
+        tokenPath: this.tokenPath
       } as OAuthTokenOptions,
       this.worker
     );
@@ -548,7 +562,8 @@ export default class Auth0Client {
       code_verifier: transaction.code_verifier,
       grant_type: 'authorization_code',
       code,
-      auth0Client: this.options.auth0Client
+      auth0Client: this.options.auth0Client,
+      tokenPath: this.tokenPath
     } as OAuthTokenOptions;
     // some old versions of the SDK might not have added redirect_uri to the
     // transaction, we dont want the key to be set to undefined.
@@ -793,7 +808,7 @@ export default class Auth0Client {
 
     const { federated, ...logoutOptions } = options;
     const federatedQuery = federated ? `&federated` : '';
-    const url = this._url(`/v2/logout?${createQueryParams(logoutOptions)}`);
+    const url = this._url(`${this.logoutPath}?${createQueryParams(logoutOptions)}`);
 
     return url + federatedQuery;
   }
@@ -888,7 +903,8 @@ export default class Auth0Client {
           code: codeResult.code,
           grant_type: 'authorization_code',
           redirect_uri: params.redirect_uri,
-          auth0Client: this.options.auth0Client
+          auth0Client: this.options.auth0Client,
+          tokenPath: this.tokenPath
         } as OAuthTokenOptions,
         this.worker
       );
@@ -968,7 +984,8 @@ export default class Auth0Client {
           refresh_token: cache && cache.refresh_token,
           redirect_uri,
           ...(timeout && { timeout }),
-          auth0Client: this.options.auth0Client
+          auth0Client: this.options.auth0Client,
+          tokenPath: this.tokenPath
         } as RefreshTokenOptions,
         this.worker
       );

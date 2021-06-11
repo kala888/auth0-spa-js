@@ -103,6 +103,9 @@ interface AdvancedOptions {
    * Note: The `openid` scope is **always applied** regardless of this setting.
    */
   defaultScope?: string;
+  logoutPath?: string;
+  tokenPath?: string;
+  loginPath?:string;
 }
 
 export interface Auth0ClientOptions extends BaseLoginOptions {
@@ -430,6 +433,7 @@ export interface TokenEndpointOptions {
   timeout?: number;
   auth0Client: any;
   [key: string]: any;
+  tokenPath: string;
 }
 
 /**

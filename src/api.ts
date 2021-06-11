@@ -1,5 +1,5 @@
 import { TokenEndpointOptions } from './global';
-import { DEFAULT_AUTH0_CLIENT } from './constants';
+import { DEFAULT_AUTH0_CLIENT, DEFAULT_TOKEN_PATH } from './constants';
 import { getJSON } from './http';
 
 export type TokenEndpointResponse = {
@@ -17,12 +17,13 @@ export async function oauthToken(
     audience,
     scope,
     auth0Client,
+    tokenPath,
     ...options
   }: TokenEndpointOptions,
   worker?: Worker
 ) {
   return await getJSON<TokenEndpointResponse>(
-    `${baseUrl}/oauth/token`,
+    `${baseUrl}${tokenPath||DEFAULT_TOKEN_PATH}`,
     timeout,
     audience || 'default',
     scope,
