@@ -58,8 +58,8 @@ export const runIframe = (
     }, timeoutInSeconds * 1000);
 
     iframeEventHandler = function (e: MessageEvent) {
-      if (e.origin != eventOrigin) return;
-      if (!e.data || e.data.type !== 'authorization_response') return;
+      // if (e.origin != eventOrigin) return;
+      // if (!e.data || e.data.type !== 'authorization_response') return;
 
       const eventSource = e.source;
 
@@ -67,9 +67,7 @@ export const runIframe = (
         (eventSource as any).close();
       }
 
-      e.data.response.error
-        ? rej(GenericError.fromPayload(e.data.response))
-        : res(e.data.response);
+      e.data.error ? rej(GenericError.fromPayload(e.data)) : res(e.data);
 
       clearTimeout(timeoutSetTimeoutId);
       window.removeEventListener('message', iframeEventHandler, false);
@@ -79,10 +77,35 @@ export const runIframe = (
       setTimeout(removeIframe, CLEANUP_IFRAME_TIMEOUT_IN_SECONDS * 1000);
     };
 
-    window.addEventListener('message', iframeEventHandler, false);
-    window.document.body.appendChild(iframe);
+    // window.addEventListener('message', iframeEventHandler, false);
     iframe.setAttribute('src', authorizeUrl);
+    iframe.id = 'getTokenIframe';
+    iframe.name = 'getTokenIframe';
+    window.document.body.appendChild(iframe);
+    iframe.onload = function () {
+      window.addEventListener('message', iframeEventHandler);
+      // @ts-ignore
+      const data = convertParamsToObj(window.getTokenIframe?.location?.search);
+      // @ts-ignore
+      data.href = window.getTokenIframe?.location?.href;
+      window.postMessage(data, '*');
+    };
   });
+};
+
+const convertParamsToObj = (searchStr: string = '') => {
+  const obj = {
+    href: ''
+  };
+  const params = searchStr ? searchStr.substr(1).split('&') : [];
+  params.forEach(value => {
+    const valueSplits = value.split('=') || [];
+    if (valueSplits.length > 1) {
+      // @ts-ignore
+      obj[valueSplits[0]] = valueSplits[1];
+    }
+  });
+  return obj;
 };
 
 export const openPopup = (url: string) => {

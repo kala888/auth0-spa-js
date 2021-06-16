@@ -156,7 +156,7 @@ export default class Auth0Client {
   private logoutPath: string;
   private tokenPath: string;
   private loginPath: string;
-  private contentType :string;
+  private contentType: string;
 
   constructor(private options: Auth0ClientOptions) {
     typeof window !== 'undefined' && validateCrypto();
@@ -189,15 +189,23 @@ export default class Auth0Client {
       this.options?.advancedOptions?.defaultScope !== undefined
         ? this.options.advancedOptions.defaultScope
         : DEFAULT_SCOPE
-    )
+    );
 
-    this.loginPath = this.options?.advancedOptions?.loginPath? this.options.advancedOptions.loginPath:DEFAULT_LOGIN_PATH
+    this.loginPath = this.options?.advancedOptions?.loginPath
+      ? this.options.advancedOptions.loginPath
+      : DEFAULT_LOGIN_PATH;
 
-    this.logoutPath = this.options?.advancedOptions?.logoutPath? this.options.advancedOptions.logoutPath:DEFAULT_LOGOUT_PATH
+    this.logoutPath = this.options?.advancedOptions?.logoutPath
+      ? this.options.advancedOptions.logoutPath
+      : DEFAULT_LOGOUT_PATH;
 
-    this.tokenPath = this.options?.advancedOptions?.tokenPath? this.options.advancedOptions.tokenPath:DEFAULT_TOKEN_PATH
+    this.tokenPath = this.options?.advancedOptions?.tokenPath
+      ? this.options.advancedOptions.tokenPath
+      : DEFAULT_TOKEN_PATH;
 
-    this.contentType = this.options?.advancedOptions?.contentType? this.options.advancedOptions.contentType:DEFAULT_CONTENT_TYPE
+    this.contentType = this.options?.advancedOptions?.contentType
+      ? this.options.advancedOptions.contentType
+      : DEFAULT_CONTENT_TYPE;
 
     // If using refresh tokens, automatically specify the `offline_access` scope.
     // Note we cannot add this to 'defaultScope' above as the scopes are used in the
@@ -263,7 +271,9 @@ export default class Auth0Client {
     };
   }
   private _authorizeUrl(authorizeOptions: AuthorizeOptions) {
-    return this._url(`${this.loginPath}?${createQueryParams(authorizeOptions)}`);
+    return this._url(
+      `${this.loginPath}?${createQueryParams(authorizeOptions)}`
+    );
   }
   private _verifyIdToken(
     id_token: string,
@@ -398,7 +408,7 @@ export default class Auth0Client {
         this.options.authorizeTimeoutInSeconds ||
         DEFAULT_AUTHORIZE_TIMEOUT_IN_SECONDS
     });
-
+    console.log('stateIn:', stateIn, ', codeResult: ', codeResult);
     if (stateIn !== codeResult.state) {
       throw new Error('Invalid state');
     }
@@ -544,6 +554,7 @@ export default class Auth0Client {
     const transaction = this.transactionManager.get();
 
     // Transaction should have a `code_verifier` to do PKCE for CSRF protection
+    console.log('handleRedirectCallback stateIn:', transaction);
     if (!transaction || !transaction.code_verifier) {
       throw new Error('Invalid state');
     }
@@ -814,7 +825,9 @@ export default class Auth0Client {
 
     const { federated, ...logoutOptions } = options;
     const federatedQuery = federated ? `&federated` : '';
-    const url = this._url(`${this.logoutPath}?${createQueryParams(logoutOptions)}`);
+    const url = this._url(
+      `${this.logoutPath}?${createQueryParams(logoutOptions)}`
+    );
 
     return url + federatedQuery;
   }
@@ -883,10 +896,15 @@ export default class Auth0Client {
 
     try {
       const codeResult = await runIframe(url, this.domainUrl, timeout);
-
-      if (stateIn !== codeResult.state) {
+      console.log(
+        '_getTokenFromIFrame stateIn:',
+        stateIn,
+        ', codeResult: ',
+        codeResult
+      );
+      /* if (stateIn !== codeResult.state) {
         throw new Error('Invalid state');
-      }
+      } */
 
       const {
         scope,
