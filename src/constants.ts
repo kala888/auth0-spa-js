@@ -91,3 +91,5 @@ export const DEFAULT_TOKEN_PATH = '/oauth/token';
  * @ignore
  */
 export const DEFAULT_LOGIN_PATH = '/authorize';
+
+export const DEFAULT_CONTENT_TYPE = 'application/json';

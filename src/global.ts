@@ -105,7 +105,8 @@ interface AdvancedOptions {
   defaultScope?: string;
   logoutPath?: string;
   tokenPath?: string;
-  loginPath?:string;
+  loginPath?: string;
+  contentType?: string;
 }
 
 export interface Auth0ClientOptions extends BaseLoginOptions {
@@ -433,7 +434,8 @@ export interface TokenEndpointOptions {
   timeout?: number;
   auth0Client: any;
   [key: string]: any;
-  tokenPath: string;
+  tokenPath?: string;
+  contentType?: string;
 }
 
 /**

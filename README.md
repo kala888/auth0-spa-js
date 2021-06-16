@@ -1,4 +1,54 @@
-# @auth0/auth0-spa-js
+# Modify auth0 js to add WSO2 support
+```js
+<script src="auth0-spa-js.production.js"></script>
+
+<button id="login">Click to Login</button>
+<button id="logout">Logout</button>
+<button id="call-api">Refresh Token</button>
+
+<script>
+  const auth0 = new Auth0Client({
+    domain: 'accounts.XXXX.com',
+    client_id: 'xxxxxxxxx',
+    redirect_uri: 'https://xxxxxx/callback',
+    scope: 'openid',
+    advancedOptions: {
+      logoutPath: '/oidc/logout',
+      tokenPath: '/oauth2/token',
+      loginPath: '/oauth2/authorize'
+    }
+  });
+
+  document.getElementById('login').addEventListener('click', async () => {
+    await auth0.loginWithRedirect();
+  });
+
+  document.getElementById('logout').addEventListener('click', async () => {
+    await auth0.logout({
+      returnTo: 'https://xxxxxx.com/'
+    });
+  });
+
+  document.getElementById('call-api').addEventListener('click', async () => {
+    const accessToken = await auth0.getTokenSilently();
+    console.log(accessToken);
+  });
+
+  //in your callback route (<MY_CALLBACK_URL>)
+  window.addEventListener('load', async () => {
+    const redirectResult = await auth0.handleRedirectCallback();
+    //logged in. you can get the user profile like this:
+    const user = await auth0.getUser();
+    console.log(user);
+  });
+
+</script>
+
+```
+
+
+
+# Refer to @auth0/auth0-spa-js
 
 Auth0 SDK for Single Page Applications using [Authorization Code Grant Flow with PKCE](https://auth0.com/docs/api-auth/tutorials/authorization-code-grant-pkce).
 

@@ -40,7 +40,8 @@ import {
   INVALID_REFRESH_TOKEN_ERROR_MESSAGE,
   DEFAULT_LOGIN_PATH,
   DEFAULT_LOGOUT_PATH,
-  DEFAULT_TOKEN_PATH
+  DEFAULT_TOKEN_PATH,
+  DEFAULT_CONTENT_TYPE
 } from './constants';
 
 import {
@@ -155,6 +156,7 @@ export default class Auth0Client {
   private logoutPath: string;
   private tokenPath: string;
   private loginPath: string;
+  private contentType :string;
 
   constructor(private options: Auth0ClientOptions) {
     typeof window !== 'undefined' && validateCrypto();
@@ -194,6 +196,8 @@ export default class Auth0Client {
     this.logoutPath = this.options?.advancedOptions?.logoutPath? this.options.advancedOptions.logoutPath:DEFAULT_LOGOUT_PATH
 
     this.tokenPath = this.options?.advancedOptions?.tokenPath? this.options.advancedOptions.tokenPath:DEFAULT_TOKEN_PATH
+
+    this.contentType = this.options?.advancedOptions?.contentType? this.options.advancedOptions.contentType:DEFAULT_CONTENT_TYPE
 
     // If using refresh tokens, automatically specify the `offline_access` scope.
     // Note we cannot add this to 'defaultScope' above as the scopes are used in the
@@ -410,7 +414,8 @@ export default class Auth0Client {
         grant_type: 'authorization_code',
         redirect_uri: params.redirect_uri,
         auth0Client: this.options.auth0Client,
-        tokenPath: this.tokenPath
+        tokenPath: this.tokenPath,
+        contentType: this.contentType
       } as OAuthTokenOptions,
       this.worker
     );
@@ -563,7 +568,8 @@ export default class Auth0Client {
       grant_type: 'authorization_code',
       code,
       auth0Client: this.options.auth0Client,
-      tokenPath: this.tokenPath
+      tokenPath: this.tokenPath,
+      contentType: this.contentType
     } as OAuthTokenOptions;
     // some old versions of the SDK might not have added redirect_uri to the
     // transaction, we dont want the key to be set to undefined.
@@ -904,7 +910,8 @@ export default class Auth0Client {
           grant_type: 'authorization_code',
           redirect_uri: params.redirect_uri,
           auth0Client: this.options.auth0Client,
-          tokenPath: this.tokenPath
+          tokenPath: this.tokenPath,
+          contentType: this.contentType
         } as OAuthTokenOptions,
         this.worker
       );
@@ -985,7 +992,8 @@ export default class Auth0Client {
           redirect_uri,
           ...(timeout && { timeout }),
           auth0Client: this.options.auth0Client,
-          tokenPath: this.tokenPath
+          tokenPath: this.tokenPath,
+          contentType: this.contentType
         } as RefreshTokenOptions,
         this.worker
       );

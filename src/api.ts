@@ -18,25 +18,41 @@ export async function oauthToken(
     scope,
     auth0Client,
     tokenPath,
+    contentType,
     ...options
   }: TokenEndpointOptions,
   worker?: Worker
 ) {
-  return await getJSON<TokenEndpointResponse>(
-    `${baseUrl}${tokenPath||DEFAULT_TOKEN_PATH}`,
-    timeout,
-    audience || 'default',
-    scope,
-    {
-      method: 'POST',
-      body: JSON.stringify(options),
-      headers: {
-        'Content-type': 'application/json',
-        'Auth0-Client': btoa(
-          JSON.stringify(auth0Client || DEFAULT_AUTH0_CLIENT)
-        )
-      }
-    },
-    worker
-  );
+  if(!contentType||contentType==='application/json'){
+      return await getJSON<TokenEndpointResponse>(
+          `${baseUrl}${tokenPath||DEFAULT_TOKEN_PATH}`,
+          timeout,
+          audience || 'default',
+          scope,
+          {
+              method: 'POST',
+              body: JSON.stringify(options),
+              headers: {
+                  'Content-type': 'application/json',
+                  'Auth0-Client': btoa(
+                      JSON.stringify(auth0Client || DEFAULT_AUTH0_CLIENT)
+                  )
+              }
+          })
+  }else if(contentType==='application/x-www-form-urlencoded'){
+      return await getJSON<TokenEndpointResponse>(
+          `${baseUrl}${tokenPath||DEFAULT_TOKEN_PATH}`,
+          timeout,
+          audience || 'default',
+          scope,
+          {
+              method: 'POST',
+              body: new URLSearchParams(options).toString(),
+              headers: {
+                  'Content-type': 'application/x-www-form-urlencoded'
+              }
+          },
+          worker
+      );
+  }
 }
