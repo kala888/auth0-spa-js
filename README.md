@@ -1,5 +1,5 @@
 # Modify auth0 js to add WSO2 support
-```js
+```
 <script src="auth0-spa-js.production.js"></script>
 
 <button id="login">Click to Login</button>
@@ -15,7 +15,8 @@
     advancedOptions: {
       logoutPath: '/oidc/logout',
       tokenPath: '/oauth2/token',
-      loginPath: '/oauth2/authorize'
+      loginPath: '/oauth2/authorize',
+      contentType: 'application/x-www-form-urlencoded'
     }
   });
 
