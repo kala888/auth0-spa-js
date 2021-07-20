@@ -337,74 +337,38 @@ export interface GetTokenWithPopupOptions extends PopupLoginOptions {}
 
 export interface LogoutUrlOptions {
   /**
-   * The URL where Auth0 will redirect your browser to after the logout.
-   *
-   * **Note**: If the `client_id` parameter is included, the
-   * `returnTo` URL that is provided must be listed in the
-   * Application's "Allowed Logout URLs" in the Auth0 dashboard.
-   * However, if the `client_id` parameter is not included, the
-   * `returnTo` URL must be listed in the "Allowed Logout URLs" at
-   * the account level in the Auth0 dashboard.
-   *
-   * [Read more about how redirecting after logout works](https://auth0.com/docs/logout/guides/redirect-users-after-logout)
+   * The URL to be redirected to when logging out. The value defined here should be the same as the callbackURI of the client application.
    */
-  returnTo?: string;
+  post_logout_redirect_uri?: string;
 
   /**
-   * The `client_id` of your application.
-   *
-   * If this property is not set, then the `client_id` that was used during initialization of the SDK is sent to the logout endpoint.
-   *
-   * If this property is set to `null`, then no client ID value is sent to the logout endpoint.
-   *
-   * [Read more about how redirecting after logout works](https://auth0.com/docs/logout/guides/redirect-users-after-logout)
+   * The parameter passed from the application to the identity provider to maintain any state information. This is used to correlate the logout requests and responses. If the state parameter is defined as state_1, the logout request and response both have state_1 in them. This makes it easy for the client to identify the request and responses.
    */
-  client_id?: string;
+  state?: string;
 
   /**
-   * When supported by the upstream identity provider,
-   * forces the user to logout of their identity provider
-   * and from Auth0.
-   * [Read more about how federated logout works at Auth0](https://auth0.com/docs/logout/guides/logout-idps)
+   * The id_token returned by the identity provider.
+   * [Read more](https://docs.wso2.com/display/IS540/OpenID+Connect+Logout+URL+Redirection)
    */
-  federated?: boolean;
+  id_token_hint?: boolean;
 }
 
 export interface LogoutOptions {
   /**
-   * The URL where Auth0 will redirect your browser to after the logout.
-   *
-   * **Note**: If the `client_id` parameter is included, the
-   * `returnTo` URL that is provided must be listed in the
-   * Application's "Allowed Logout URLs" in the Auth0 dashboard.
-   * However, if the `client_id` parameter is not included, the
-   * `returnTo` URL must be listed in the "Allowed Logout URLs" at
-   * the account level in the Auth0 dashboard.
-   *
-   * [Read more about how redirecting after logout works](https://auth0.com/docs/logout/guides/redirect-users-after-logout)
+   * The URL to be redirected to when logging out. The value defined here should be the same as the callbackURI of the client application.
    */
-  returnTo?: string;
+  post_logout_redirect_uri?: string;
 
   /**
-   * The `client_id` of your application.
-   *
-   * If this property is not set, then the `client_id` that was used during initialization of the SDK is sent to the logout endpoint.
-   *
-   * If this property is set to `null`, then no client ID value is sent to the logout endpoint.
-   *
-   * [Read more about how redirecting after logout works](https://auth0.com/docs/logout/guides/redirect-users-after-logout)
+   * The parameter passed from the application to the identity provider to maintain any state information. This is used to correlate the logout requests and responses. If the state parameter is defined as state_1, the logout request and response both have state_1 in them. This makes it easy for the client to identify the request and responses.
    */
-  client_id?: string;
+  state?: string;
 
   /**
-   * When supported by the upstream identity provider,
-   * forces the user to logout of their identity provider
-   * and from Auth0.
-   * This option cannot be specified along with the `localOnly` option.
-   * [Read more about how federated logout works at Auth0](https://auth0.com/docs/logout/guides/logout-idps)
+   * The id_token returned by the identity provider.
+   * [Read more](https://docs.wso2.com/display/IS540/OpenID+Connect+Logout+URL+Redirection)
    */
-  federated?: boolean;
-
+  id_token_hint?: boolean;
   /**
    * When `true`, this skips the request to the logout endpoint on the authorization server,
    * effectively performing a "local" logout of the application. No redirect should take place,

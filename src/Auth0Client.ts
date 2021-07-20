@@ -817,19 +817,12 @@ export default class Auth0Client {
    * @param options
    */
   public buildLogoutUrl(options: LogoutUrlOptions = {}): string {
-    if (options.client_id !== null) {
-      options.client_id = options.client_id || this.options.client_id;
-    } else {
-      delete options.client_id;
-    }
-
-    const { federated, ...logoutOptions } = options;
-    const federatedQuery = federated ? `&federated` : '';
+    const { ...logoutOptions } = options;
     const url = this._url(
       `${this.logoutPath}?${createQueryParams(logoutOptions)}`
     );
 
-    return url + federatedQuery;
+    return url;
   }
 
   /**
@@ -849,12 +842,6 @@ export default class Auth0Client {
    */
   public logout(options: LogoutOptions = {}) {
     const { localOnly, ...logoutOptions } = options;
-
-    if (localOnly && logoutOptions.federated) {
-      throw new Error(
-        'It is invalid to set both the `federated` and `localOnly` options to `true`'
-      );
-    }
 
     this.cache.clear();
     this.cookieStorage.remove('auth0.is.authenticated');
