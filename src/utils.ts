@@ -61,11 +61,11 @@ export const runIframe = (
       // if (e.origin != eventOrigin) return;
       // if (!e.data || e.data.type !== 'authorization_response') return;
 
-      const eventSource = e.source;
+      /* const eventSource = e.source;
 
       if (eventSource) {
         (eventSource as any).close();
-      }
+      } */
 
       e.data.error ? rej(GenericError.fromPayload(e.data)) : res(e.data);
 
